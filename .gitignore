@@ -1,0 +1,10 @@
+.git
+.vs
+
+*.vcxproj.user
+*.aps
+
+Debug/
+*/Debug/
+Release/
+*/Release/

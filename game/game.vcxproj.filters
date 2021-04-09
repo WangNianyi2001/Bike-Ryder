@@ -14,8 +14,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SimpleWin32Lib\SimpleWin32Lib.cpp">
+    <ClCompile Include="..\..\..\..\..\..\Documents\Code\SimpleWin32Lib\SimpleWin32Lib\SimpleWin32Lib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleWin32Lib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

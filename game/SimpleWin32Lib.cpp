@@ -29,22 +29,21 @@ Window::Window(HINSTANCE hInstance, InitArg const args) :
 	class_name(args.class_name),
 	title(args.title),
 	classex({
-		.cbSize = sizeof(WNDCLASSEX),
-		.style = args.class_style,
-		.lpfnWndProc = args.event_processor,
-		.cbClsExtra = 0,
-		.cbWndExtra = 0,
-		.hInstance = hInstance,
-		.hIcon = args.icon,
-		.hCursor = args.cursor,
-		.hbrBackground = args.background_brush,
-		.lpszMenuName = args.menu_name,
-		.lpszClassName = args.class_name,
-		.hIconSm = args.icon_small,
-	}),
-	instance(hInstance),
-	window(createWindow(args))
-{
+	.cbSize = sizeof(WNDCLASSEX),
+	.style = args.class_style,
+	.lpfnWndProc = args.event_processor,
+	.cbClsExtra = 0,
+	.cbWndExtra = 0,
+	.hInstance = hInstance,
+	.hIcon = args.icon,
+	.hCursor = args.cursor,
+	.hbrBackground = args.background_brush,
+	.lpszMenuName = args.menu_name,
+	.lpszClassName = args.class_name,
+	.hIconSm = args.icon_small,
+		}),
+		instance(hInstance),
+		window(createWindow(args)) {
 	// Not a single line is really needed here.
 }
 
@@ -77,7 +76,7 @@ std::map<UINT, EventHandler::Median> EventHandler::medians{};
 
 LRESULT CALLBACK EventHandler::operator()(
 	HWND hWnd, UINT type, WPARAM wParam, LPARAM lParam
-) {
+	) {
 	this->hWnd = hWnd;
 	auto &median_functions = EventHandler::medians;
 	auto &handlers = EventHandler::handlers;
@@ -118,8 +117,21 @@ LRESULT EventHandler::defaultPaintMedian(
 	return handler(self, DrawingContext(hWnd));
 }
 
+RECT EventHandler::getWindowRect() {
+	RECT rect;
+	GetWindowRect(this->hWnd, &rect);
+	return rect;
+}
+
+void EventHandler::setWindowRect(RECT rect) {
+	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+}
+
 BOOL EventHandler::triggerRepaint() {
 	return InvalidateRect(this->hWnd, NULL, true);
+}
+BOOL EventHandler::triggerRepaint(RECT rect) {
+	return InvalidateRect(this->hWnd, &rect, true);
 }
 
 LRESULT EventHandler::defaultDestroyHandler(HWND, WPARAM, LPARAM) {
@@ -181,7 +193,7 @@ SIZE DrawingContext::measureText(LPCWSTR text, int count = -1) {
 DrawingContext::DrawingContext(HWND &hWnd) :
 	hWnd(hWnd),
 	hdc(BeginPaint(hWnd, &ps)) {
- }
+}
 
 DrawingContext::~DrawingContext() {
 	DeleteObject(DrawingContext::hBrush);

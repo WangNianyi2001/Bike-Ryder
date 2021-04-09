@@ -49,7 +49,7 @@ namespace SimpleWin32 {
 		EventHandler() = default;
 		LRESULT CALLBACK operator()(
 			HWND hWnd, UINT type, WPARAM wParam, LPARAM lParam
-		);
+			);
 		bool setMedian(UINT type, Median f);
 		template<typename T>
 		bool setMedian(UINT type, T f) {
@@ -64,7 +64,10 @@ namespace SimpleWin32 {
 		static LRESULT defaultPaintMedian(
 			EventHandler *self, Handler handler, HWND hWnd, WPARAM, LPARAM
 		);
+		RECT getWindowRect();
+		void setWindowRect(RECT rect);
 		BOOL triggerRepaint();
+		BOOL triggerRepaint(RECT rect);
 		static LRESULT defaultDestroyHandler(HWND, WPARAM, LPARAM);
 	};
 	class DrawingContext {

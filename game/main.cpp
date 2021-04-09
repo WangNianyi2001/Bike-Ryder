@@ -1,4 +1,5 @@
 #include "SimpleWin32Lib.h"
+#include "game.h"
 
 using namespace SimpleWin32;
 
@@ -12,7 +13,9 @@ int APIENTRY wWinMain(
 	LPWSTR lpCmdLine, int nCmdShow
 ) {
 	Window window(hInstance, Window::InitArg{
-		.title = L"Calculator",
+		.title = L"Crazy Bicycle",
+		.width = width * scale,
+		.height = height * scale,
 		.event_processor = &eventProcessor,
 	});
 
