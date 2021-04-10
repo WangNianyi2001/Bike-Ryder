@@ -10,8 +10,8 @@ namespace Game {
 	using namespace std;
 
 	static constexpr int vwidth = 384, vheight = 288;
-
 	static int scale = 2;
+	static constexpr int fps = 15;
 
 	static map<string, Scene *> scenes;
 	static Scene *active_scene = nullptr;

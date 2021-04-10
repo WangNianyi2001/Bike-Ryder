@@ -12,13 +12,12 @@ void levelInit();
 
 constexpr int max_z = 100;
 constexpr int horizon_y = 200;
-constexpr int zyk = horizon_y / max_z;
+constexpr int offset_y = -100;
 
 class WorldObject {
-protected:
+public:
 	float x, y, z;
 	int width, height;
-public:
 	Sprite sprite;
 	WorldObject(int width, int height, float x, float y, float z) :
 		width(width), height(height),
@@ -35,7 +34,7 @@ public:
 		sprite.width = (int)(width / z);
 		sprite.height = (int)(height / z);
 		sprite.x = x / z + vwidth / 2;
-		sprite.y = vheight - (y / z + zyk * z);
+		sprite.y = vheight - ((offset_y + y) / z) - horizon_y;
 	}
 };
 
@@ -60,7 +59,11 @@ int Character::height = 100;
 vector<Character *> characters;
 Character *self;
 
-void enter() {
+LRESULT timer(HWND hWnd, WPARAM wParam, LPARAM lParam) {
+	self->z += 0.1f;
+	self->updatePosition();
+	InvalidateRect(hWnd, NULL, true);
+	return 0;
 }
 
 LRESULT paint(HWND hWnd, WPARAM wParam, LPARAM lParam) {
@@ -72,8 +75,8 @@ LRESULT paint(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 }
 
 void levelInit() {
-	level.onEnter = &enter;
-	self = new Character(0.0f, 100.0f);
+	self = new Character(0.0f, 100.0f, 1.0f);
 	level.addSprite(&self->sprite);
 	level.addHandler(WM_PAINT, &paint);
+	level.addHandler(WM_TIMER, &timer);
 }

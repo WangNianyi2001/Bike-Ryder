@@ -28,7 +28,8 @@ namespace Game {
 			.width = vwidth * scale,
 			.height = vheight * scale,
 			.event_processor = eventProcessor,
-			});
+		});
+		SetTimer(window->window, 0, 1000 / fps, NULL);
 	}
 
 	void rescale(int scale) {
