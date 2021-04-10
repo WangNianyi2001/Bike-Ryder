@@ -31,13 +31,11 @@ public:
 
 struct Frame {
 	Int2 size, anchor;
-	Float2 scale;
 	Texture *foreground, *mask;
 	bool visible;
 	Frame(
 		Int2 size, Int2 anchor,
-		Float2 scale,
 		Texture *foreground, Texture *mask = nullptr
 	);
-	void paintOn(HDC &hdc, Int2 position) const;
+	void paintOn(HDC &hdc, Int2 position, Float2 scale = { 1.0f, 1.0f }) const;
 };
