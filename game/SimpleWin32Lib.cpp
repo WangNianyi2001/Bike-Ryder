@@ -108,29 +108,20 @@ void EventHandler::addHandler(UINT type, Handler handler) {
 		this->handlers.insert(std::pair(type, std::set<Handler>()));
 	this->handlers[type].insert(handler);
 }
-DrawingContext EventHandler::getDrawingContext() {
-	return DrawingContext(this->hWnd);
-}
 LRESULT EventHandler::defaultPaintMedian(
 	EventHandler *self, Handler handler, HWND hWnd, WPARAM, LPARAM
 ) {
-	return handler(self, DrawingContext(hWnd));
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(hWnd, &ps);
+	auto ret = handler(self, DrawingContext(hdc));
+	EndPaint(hWnd, &ps);
+	return ret;
 }
 
-RECT EventHandler::getWindowRect() {
-	RECT rect;
-	GetWindowRect(this->hWnd, &rect);
-	return rect;
-}
-
-void EventHandler::setWindowRect(RECT rect) {
-	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-}
-
-BOOL EventHandler::triggerRepaint() {
+BOOL EventHandler::markDirty() {
 	return InvalidateRect(this->hWnd, NULL, true);
 }
-BOOL EventHandler::triggerRepaint(RECT rect) {
+BOOL EventHandler::markDirty(RECT rect) {
 	return InvalidateRect(this->hWnd, &rect, true);
 }
 
@@ -141,19 +132,14 @@ LRESULT EventHandler::defaultDestroyHandler(HWND, WPARAM, LPARAM) {
 
 // DrawingContext
 
-PAINTSTRUCT DrawingContext::ps{};
-HBRUSH DrawingContext::hBrush{};
-HPEN DrawingContext::hPen{};
-HFONT DrawingContext::hFont{};
-
 void DrawingContext::setSolidBrush(COLORREF color) {
-	DrawingContext::hBrush = CreateSolidBrush(color);
-	SelectObject(this->hdc, DrawingContext::hBrush);
+	hBrush = CreateSolidBrush(color);
+	SelectObject(this->hdc, hBrush);
 }
 
 void DrawingContext::setPen(int style, int width, COLORREF color) {
-	DrawingContext::hPen = CreatePen(style, width, color);
-	SelectObject(this->hdc, DrawingContext::hPen);
+	hPen = CreatePen(style, width, color);
+	SelectObject(this->hdc, hPen);
 }
 
 void DrawingContext::setFont(FontArg args) {
@@ -168,7 +154,7 @@ void DrawingContext::setFont(FontArg args) {
 		args.family,
 		args.name
 	);
-	SelectObject(this->hdc, DrawingContext::hFont);
+	SelectObject(this->hdc, hFont);
 }
 
 void DrawingContext::drawRect(RECT rect) {
@@ -190,14 +176,11 @@ SIZE DrawingContext::measureText(LPCWSTR text, int count = -1) {
 	return res;
 }
 
-DrawingContext::DrawingContext(HWND &hWnd) :
-	hWnd(hWnd),
-	hdc(BeginPaint(hWnd, &ps)) {
+DrawingContext::DrawingContext(HDC &hdc) : hdc(hdc) {
 }
 
 DrawingContext::~DrawingContext() {
-	DeleteObject(DrawingContext::hBrush);
-	DeleteObject(DrawingContext::hPen);
-	DeleteObject(DrawingContext::hFont);
-	EndPaint(hWnd, &ps);
+	DeleteObject(hBrush);
+	DeleteObject(hPen);
+	DeleteObject(hFont);
 }

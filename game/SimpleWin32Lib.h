@@ -30,9 +30,9 @@ namespace SimpleWin32 {
 		LPCWSTR const class_name, title;
 		WNDCLASSEX const classex;
 		HINSTANCE const instance;
-		HWND const window;
 		HWND createWindow(InitArg const &args);
 	public:
+		HWND const window;
 		Window(HINSTANCE hInstance, InitArg const args);
 		int run();
 	};
@@ -64,21 +64,17 @@ namespace SimpleWin32 {
 		static LRESULT defaultPaintMedian(
 			EventHandler *self, Handler handler, HWND hWnd, WPARAM, LPARAM
 		);
-		RECT getWindowRect();
-		void setWindowRect(RECT rect);
-		BOOL triggerRepaint();
-		BOOL triggerRepaint(RECT rect);
+		BOOL markDirty();
+		BOOL markDirty(RECT rect);
 		static LRESULT defaultDestroyHandler(HWND, WPARAM, LPARAM);
 	};
 	class DrawingContext {
-		HWND &hWnd;
-		HDC const hdc;
-		static PAINTSTRUCT ps;
 		// HOBJ
-		static HBRUSH hBrush;
-		static HPEN hPen;
-		static HFONT hFont;
+		HBRUSH hBrush = NULL;
+		HPEN hPen = NULL;
+		HFONT hFont = NULL;
 	public:
+		HDC hdc;
 		void setSolidBrush(COLORREF color);
 		void setPen(int style, int width, COLORREF color);
 		struct FontArg {
@@ -101,7 +97,7 @@ namespace SimpleWin32 {
 		void drawRect(RECT rect);
 		void drawText(LPCWSTR text, RECT rect, UINT format = 0);
 		SIZE measureText(LPCWSTR text, int count);
-		DrawingContext(HWND &hWnd);
+		DrawingContext(HDC &hdc);
 		~DrawingContext();
 	};
 }
