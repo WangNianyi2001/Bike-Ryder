@@ -1,8 +1,5 @@
 #pragma once
 
-#include <windows.h>
-#include "config.h"
-
 template<typename T> struct Pair { T x, y; };
 
 using Int2 = Pair<int>;
@@ -27,15 +24,4 @@ public:
 class Bitmap : public Texture {
 public:
 	Bitmap(LPCWSTR url);
-};
-
-struct Frame {
-	Int2 size, anchor;
-	Texture *foreground, *mask;
-	bool visible;
-	Frame(
-		Int2 size, Int2 anchor,
-		Texture *foreground, Texture *mask = nullptr
-	);
-	void paintOn(HDC &hdc, Int2 position, Float2 scale = { 1.0f, 1.0f }) const;
 };

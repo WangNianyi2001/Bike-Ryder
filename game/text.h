@@ -1,7 +1,7 @@
 #pragma once
 
 #include "config.h"
-#include "sprite.h"
+#include "animation.h"
 #include <cctype>
 #include <vector>
 #include <map>

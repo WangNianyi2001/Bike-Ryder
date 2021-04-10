@@ -1,7 +1,4 @@
-#include "SimpleWin32Lib.h"
-#include "config.h"
-#include "sprite.h"
-#include "text.h"
+#include "game.h"
 
 using namespace SimpleWin32;
 
