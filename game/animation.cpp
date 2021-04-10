@@ -1,9 +1,15 @@
 #include "animation.h"
 
-Animation::Animation(initializer_list<Frame> frames, bool loop, void (*onEnd)(Animation *)) :
+Animation::Animation(vector<Frame> frames, bool loop, function<void(Animation *)> onEnd) :
 	loop(loop), onEnd(onEnd)
 {
-	this->frames.insert(this->frames.end(), frames);
+	this->frames.insert(this->frames.end(), frames.begin(), frames.end());
+	active = this->frames.begin();
+}
+
+Animation::Animation(Animation const &reference) :
+	Animation(reference.frames, reference.loop)
+{
 }
 
 void Animation::begin() {

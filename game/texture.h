@@ -1,22 +1,18 @@
 #pragma once
 #pragma warning(disable:26495)
 
-#include <windows.h>
+#include "paintable.h"
 #include "config.h"
 
-template<typename T> struct Pair { T x, y; };
-
-using Int2 = Pair<int>;
-using Float2 = Pair<float>;
-
-struct Layer {
+struct Layer : public Paintable {
 	Int2 size;
 	HDC hdc;
 	HBITMAP hbm;
 	Layer(Int2 size);
 	Layer(Layer const &reference);
-	void paintOn(HDC &hdc, Int2 position, int mode = SRCCOPY);
-	void paintOn(HDC &hdc, Int2 position, Int2 dest_size, int mode = SRCCOPY);
+	void paintOn(HDC &hdc, Int2 position, int mode) const;
+	void paintOn(HDC &hdc, Int2 position) const;
+	void paintOn(HDC &hdc, Int2 position, Int2 dest_size, int mode) const;
 };
 
 struct PureColor : Layer {
@@ -29,7 +25,7 @@ public:
 	Bitmap(LPCWSTR url);
 };
 
-struct Texture {
+struct Texture : public Scalable {
 	Int2 size, anchor;
 	Layer *foreground, *mask;
 	bool visible;

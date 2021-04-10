@@ -11,7 +11,7 @@ using namespace std;
 
 static constexpr int fs = 8;
 
-class Text {
+class Text : public Paintable {
 	vector<pair<Texture *, int>> sprites;
 public:
 	static map<char, Layer *> textures;

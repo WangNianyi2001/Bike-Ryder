@@ -16,18 +16,31 @@ void projectOnto(HDC hdc) {
 	);
 }
 
-PureColor background(RGB(255, 255, 200));
+Character player(self_fall, self_kick, self_fall);
+
+PureColor background(RGB(255, 255, 255));
 
 LRESULT paint(EventHandler *self, DrawingContext dc) {
 	background.paintOn(vscreen.hdc, { 0, 0 });
-	fall.paintOn(vscreen.hdc, { 100, 100 });
+	player.render(vscreen.hdc);
 	projectOnto(dc.hdc);
 	return 0;
 }
 
 LRESULT timer(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
-	fall.update();
+	((Animation *)player.current->second)->update();
 	self->markDirty();
+	return 0;
+}
+
+LRESULT keydown(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
+	switch(wParam) {
+	case 'A':
+		player.kick(1);
+		break;
+	case 'D':
+		player.kick(-1);
+	}
 	return 0;
 }
 
@@ -54,10 +67,11 @@ int APIENTRY wWinMain(
 	event_handler.setMedian(WM_PAINT, EventHandler::defaultPaintMedian);
 	event_handler.addHandler(WM_PAINT, paint);
 	event_handler.addHandler(WM_TIMER, timer);
+	event_handler.addHandler(WM_KEYDOWN, keydown);
 	event_handler.addHandler(WM_DESTROY, EventHandler::defaultDestroyHandler);
 
 	// Animations
-	fall.begin();
+	player.z = 1.0f;
 
 	// Set the window to run
 	int result = window->run();

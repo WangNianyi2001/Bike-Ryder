@@ -3,8 +3,8 @@
 #include "texture.h"
 #include <windows.h>
 #include <vector>
-#include <set>
 #include <initializer_list>
+#include <functional>
 
 using namespace std;
 
@@ -13,13 +13,14 @@ struct Frame {
 	Texture texture;
 };
 
-struct Animation {
+struct Animation : public Scalable {
 	ULONGLONG last_frame;
 	vector<Frame> frames;
 	vector<Frame>::iterator active;
 	bool loop = false, stop = true;
-	void (*onEnd)(Animation *);
-	Animation(initializer_list<Frame> frames, bool loop = false, void (*onEnd)(Animation *) = nullptr);
+	function<void(Animation *)> onEnd;
+	Animation(vector<Frame> frames, bool loop = false, function<void(Animation *)> onEnd = nullptr);
+	Animation(Animation const &reference);
 	void begin();
 	void update();
 	void paintOn(HDC &hdc, Int2 position, Float2 scale = { 1.0f, 1.0f }) const;
