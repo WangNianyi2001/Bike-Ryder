@@ -2,13 +2,19 @@
 
 #include "SimpleWin32Lib.h"
 #include "scene.h"
+#include <map>
+#include <string>
 
 namespace Game {
 	using namespace SimpleWin32;
+	using namespace std;
 
 	constexpr int vwidth = 384, vheight = 288;
 
 	int scale = 2;
+
+	map<string, Scene *> scenes;
+	Scene *active_scene = nullptr;
 
 	EventHandler event_handler;
 	LRESULT CALLBACK eventProcessor(HWND hWnd, UINT type, WPARAM wParam, LPARAM lParam) {
@@ -16,6 +22,17 @@ namespace Game {
 	}
 
 	Window *window;
+
+	void addScene(string name, Scene *scene) {
+		scenes.insert(pair(name, scene));
+	}
+
+	void loadScene(string name) {
+		Scene *const scene = scenes[name];
+		if(scene->init)
+			scene->init();
+		active_scene = scene;
+	}
 
 	void initGame(HINSTANCE hInstance) {
 		window = new Window(hInstance, Window::InitArg{

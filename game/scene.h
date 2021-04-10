@@ -1,14 +1,19 @@
 #pragma once
 
 #include "sprite.h"
+#include "SimpleWin32Lib.h"
 #include <vector>
+#include <map>
 #include <algorithm>
 
 namespace Game {
 	using namespace std;
 	class Scene {
-		vector<Sprite *> sprites;
 	public:
+		vector<Sprite *> sprites;
+		using Handler = SimpleWin32::EventHandler::Handler;
+		map<UINT, Handler> handlers;
+		void (*init)();
 		Scene() = default;
 		Scene(initializer_list<Sprite *> const &sprites) {
 			for(Sprite *sprite : sprites)
