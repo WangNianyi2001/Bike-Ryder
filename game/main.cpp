@@ -13,12 +13,12 @@ LRESULT CALLBACK eventProcessor(HWND hWnd, UINT type, WPARAM wParam, LPARAM lPar
 }
 
 PureColor red(RGB(255, 0, 0), { 8, 8 });
-Text text("something", { 10, 100 }, red);
+Text text("something", red);
 
 PureColor vscreen(RGB(255, 255, 255), { vwidth, vheight });
 
 LRESULT paint(EventHandler *self, DrawingContext dc) {
-	text.paintOn(vscreen.hdc);
+	text.paintOn(vscreen.hdc, { 10, 100 });
 	vscreen.paintOn(
 		dc.hdc,
 		{ 0, 0 },

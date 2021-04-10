@@ -42,11 +42,11 @@ Bitmap::Bitmap(LPCWSTR url) : Texture({ 0, 0 }) {
 }
 
 Frame::Frame(
-	Int2 size, Int2 anchor, Int2 position,
+	Int2 size, Int2 anchor,
 	Float2 scale,
 	Texture *foreground, Texture *mask
 ) :
-	size(size), anchor(anchor), position(position),
+	size(size), anchor(anchor),
 	scale(scale),
 	foreground(foreground), mask(mask),
 	visible(true)
@@ -57,7 +57,7 @@ Frame::Frame(
 	}
 }
 
-void Frame::paintOn(HDC &hdc) const {
+void Frame::paintOn(HDC &hdc, Int2 position) const {
 	if(!visible)
 		return;
 	if(mask) {
@@ -81,3 +81,7 @@ void Frame::paintOn(HDC &hdc) const {
 		}, NOTSRCERASE
 	);
 }
+
+class Sprite {
+public:
+};

@@ -10,34 +10,40 @@ using namespace std;
 static constexpr int fs = 8;
 
 class Text {
-	vector<Frame *> sprites;
+	vector<pair<Frame *, int>> sprites;
 public:
 	static map<char, Texture *> textures;
-	Text(char const *content, Int2 position, Texture &foreground) {
+	Text(char const *content, Texture &foreground) {
 		char c;
-		for(int i = 0; c = content[i]; ++i, position.x += fs) {
+		for(int i = 0, x = 0; c = content[i]; ++i, x += fs) {
 			if(!isalpha(c))
 				continue;
 			if(isupper(c))
 				c += 'a' - 'A';
 			Texture *fg_copy = new Texture(foreground);
 			Frame *sprite = new Frame(
-				{ fs, fs }, { 0, 0 }, position,
+				{ fs, fs }, { 0, 0 },
 				{ 1, 1 },
 				fg_copy, Text::textures[c]
 			);
-			sprites.push_back(sprite);
+			sprites.push_back(pair(sprite, x));
 		}
 	}
 	~Text() {
-		for(Frame *s : sprites) {
+		for(auto p : sprites) {
+			Frame *s = p.first;
 			delete s->foreground;
 			delete s;
 		}
 	}
-	void paintOn(HDC hdc) {
-		for(auto sprite : sprites)
-			sprite->paintOn(hdc);
+	void paintOn(HDC hdc, Int2 position) {
+		for(auto p : sprites) {
+			auto sprite = p.first;
+			auto x = p.second;
+			Int2 current = position;
+			current.x += x;
+			sprite->paintOn(hdc, current);
+		}
 	}
 };
 
