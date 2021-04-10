@@ -39,8 +39,10 @@ int APIENTRY wWinMain(
 	HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPWSTR lpCmdLine, int nCmdShow
 ) {
+	// Initializing environment
 	srand((unsigned)GetTickCount64());
 
+	// Setting up the window
 	window = new Window(hInstance, Window::InitArg{
 		.title = L"µÅ³µ Bike Ryder",
 		.width = vwidth * pixel_scale,
@@ -53,7 +55,14 @@ int APIENTRY wWinMain(
 	event_handler.addHandler(WM_PAINT, paint);
 	event_handler.addHandler(WM_TIMER, timer);
 	event_handler.addHandler(WM_DESTROY, EventHandler::defaultDestroyHandler);
+
+	// Animations
 	fall.begin();
 
-	return window->run();
+	// Set the window to run
+	int result = window->run();
+
+	// Cleaning
+	unloadImages();
+	return result;
 }
