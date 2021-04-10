@@ -1,19 +1,66 @@
-#include "scene.h"
+#pragma once
 
-Game::Scene level;
-void levelInit();
+#include "game.h"
+#include <vector>
+#include <random>
 
 using namespace Game;
+using namespace std;
 
-Bitmap bm_test(L"../test.bmp");
-Sprite sp_test(50, 0, 50, 100, 0, &bm_test);
-PureColor pc_bg(RGB(200, 255, 255));
-Sprite sp_bg(0, 0, 384, 288, 100, &pc_bg);
+Scene level;
+void levelInit();
+
+constexpr int max_z = 100;
+constexpr int horizon_y = 200;
+constexpr int zyk = horizon_y / max_z;
+
+class WorldObject {
+protected:
+	float x, y, z;
+	int width, height;
+public:
+	Sprite sprite;
+	WorldObject(int width, int height, float x, float y, float z) :
+		width(width), height(height),
+		x(x), y(y), z(z),
+		sprite(Sprite(0, 0, width, height, (int)z, nullptr))
+	{}
+	void updatePosition() {
+		sprite.z_index = (int)z;
+		if(z > max_z) {
+			sprite.visible = false;
+			return;
+		}
+		sprite.visible = true;
+		sprite.width = (int)(width / z);
+		sprite.height = (int)(height / z);
+		sprite.x = x / z + vwidth / 2;
+		sprite.y = vheight - (y / z + zyk * z);
+	}
+};
+
+class Character : public WorldObject {
+public:
+	static int width, height;
+	Character(float x, float y = 0, float z = 1) : WorldObject(
+		Character::width, Character::height,
+		x, y, z
+	) {
+		sprite.texture = new PureColor(RGB(
+			rand() & 255,
+			rand() & 255,
+			rand() & 255
+		));
+		updatePosition();
+	}
+};
+int Character::width = 50;
+int Character::height = 100;
+
+vector<Character *> characters;
+Character *self;
 
 void enter() {
-	level.addSprite(&sp_test);
-	level.addSprite(&sp_bg);
-	level.sortSprites();
 }
 
 LRESULT paint(HWND hWnd, WPARAM wParam, LPARAM lParam) {
@@ -24,15 +71,9 @@ LRESULT paint(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 	return 0;
 }
 
-LRESULT click(HWND hWnd, WPARAM wParam, LPARAM lParam) {
-	// sc_test.removeSprite(&sp_test);
-	sp_test.visible = false;
-	InvalidateRect(hWnd, NULL, true);
-	return 0;
-}
-
 void levelInit() {
 	level.onEnter = &enter;
+	self = new Character(0.0f, 100.0f);
+	level.addSprite(&self->sprite);
 	level.addHandler(WM_PAINT, &paint);
-	level.addHandler(WM_LBUTTONDOWN, &click);
 }
