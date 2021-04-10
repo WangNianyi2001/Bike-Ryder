@@ -58,9 +58,11 @@ namespace Game {
 			width(width), height(height),
 			z_index(z_index),
 			texture(texture), bg(bg),
-			visible(false)
+			visible(true)
 		{}
 		void paintOn(HDC &hdc) const {
+			if(!visible)
+				return;
 			texture->paintOn(hdc, x, y, width, height);
 		}
 	};

@@ -16,9 +16,14 @@ namespace Game {
 	map<string, Scene *> scenes;
 	Scene *active_scene = nullptr;
 
-	EventHandler event_handler;
 	LRESULT CALLBACK eventProcessor(HWND hWnd, UINT type, WPARAM wParam, LPARAM lParam) {
-		return event_handler(hWnd, type, wParam, lParam);
+		if(type == WM_DESTROY)
+			PostQuitMessage(0);
+		if(!active_scene)
+			return DefWindowProc(hWnd, type, wParam, lParam);
+		if(!active_scene->handlers.count(type))
+			return DefWindowProc(hWnd, type, wParam, lParam);
+		return active_scene->handlers[type](hWnd, wParam, lParam);
 	}
 
 	Window *window;
@@ -41,8 +46,6 @@ namespace Game {
 			.height = vheight * scale,
 			.event_processor = eventProcessor,
 		});
-		event_handler.addHandler(WM_DESTROY, &EventHandler::defaultDestroyHandler);
-		event_handler.setMedian(WM_PAINT, &EventHandler::defaultPaintMedian);
 	}
 
 	void rescale(int scale) {

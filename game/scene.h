@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sprite.h"
-#include "SimpleWin32Lib.h"
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -11,7 +10,7 @@ namespace Game {
 	class Scene {
 	public:
 		vector<Sprite *> sprites;
-		using Handler = SimpleWin32::EventHandler::Handler;
+		using Handler = LRESULT (*)(HWND, WPARAM, LPARAM);
 		map<UINT, Handler> handlers;
 		void (*init)();
 		Scene() = default;
@@ -35,6 +34,9 @@ namespace Game {
 				sprites.begin(), sprites.end(),
 				[](Sprite *a, Sprite *b) { return a->z_index > b->z_index; }
 			);
+		}
+		void addHandler(UINT type, Handler handler) {
+			this->handlers.insert(pair(type, handler));
 		}
 		void paintOn(HDC &hdc) {
 			for(Sprite *sprite : sprites) {
