@@ -34,8 +34,8 @@ namespace Game {
 
 	void loadScene(string name) {
 		Scene *const scene = scenes[name];
-		if(scene->init)
-			scene->init();
+		if(scene->onEnter)
+			scene->onEnter();
 		active_scene = scene;
 	}
 

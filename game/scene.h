@@ -12,7 +12,7 @@ namespace Game {
 		vector<Sprite *> sprites;
 		using Handler = LRESULT (*)(HWND, WPARAM, LPARAM);
 		map<UINT, Handler> handlers;
-		void (*init)();
+		void (*onEnter)();
 		Scene() = default;
 		Scene(initializer_list<Sprite *> const &sprites) {
 			for(Sprite *sprite : sprites)
