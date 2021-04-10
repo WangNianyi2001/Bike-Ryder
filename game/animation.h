@@ -1,16 +1,26 @@
 #pragma once
-#pragma warning(disable:26495)
 
-#include <windows.h>
 #include "texture.h"
+#include <windows.h>
+#include <vector>
+#include <set>
+#include <initializer_list>
+
+using namespace std;
 
 struct Frame {
-	Int2 size, anchor;
-	Texture *foreground, *mask;
-	bool visible;
-	Frame(
-		Int2 size, Int2 anchor,
-		Texture *foreground, Texture *mask = nullptr
-	);
+	ULONGLONG interval;
+	Texture texture;
+};
+
+struct Animation {
+	ULONGLONG last_frame;
+	vector<Frame> frames;
+	vector<Frame>::iterator active;
+	bool loop = false, stop = true;
+	void (*onEnd)(Animation *);
+	Animation(initializer_list<Frame> frames, bool loop = false, bool start = false, void (*onEnd)(Animation *) = nullptr);
+	void begin();
+	void update();
 	void paintOn(HDC &hdc, Int2 position, Float2 scale = { 1.0f, 1.0f }) const;
 };

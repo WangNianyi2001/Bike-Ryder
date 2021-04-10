@@ -1,44 +1,41 @@
 #include "animation.h"
 
-Frame::Frame(
-	Int2 size, Int2 anchor,
-	Texture *foreground, Texture *mask
-) :
-	size(size), anchor(anchor),
-	foreground(foreground), mask(mask),
-	visible(true)
+Animation::Animation(initializer_list<Frame> frames, bool loop, bool begin, void (*onEnd)(Animation *)) :
+	loop(loop), onEnd(onEnd)
 {
-	if(mask) {
-		mask->paintOn(foreground->hdc, { 0, 0 }, { size.x, size.y }, DSTINVERT);
-		mask->paintOn(foreground->hdc, { 0, 0 }, { size.x, size.y }, SRCAND);
-	}
+	this->frames.insert(this->frames.end(), frames);
+	if(begin)
+		this->begin();
 }
 
-void Frame::paintOn(HDC &hdc, Int2 position, Float2 scale) const {
-	if(!visible)
+void Animation::begin() {
+	last_frame = GetTickCount64();
+	active = frames.begin();
+	stop = false;
+}
+
+void Animation::update() {
+	if(stop)
 		return;
-	if(mask) {
-		foreground->paintOn(
-			hdc, {
-				(int)(position.x - scale.x * anchor.x),
-				(int)(position.y - scale.y * anchor.y)
-			}, {
-				(int)(scale.x * size.x),
-				(int)(scale.y * size.y)
-			}, DSTINVERT
-		);
+	ULONGLONG elapsed = GetTickCount64() - last_frame;
+	while(active != frames.end()) {
+		if(active->interval > elapsed)
+			return;
+		elapsed -= active->interval;
+		last_frame += active->interval;
+		++active;
 	}
-	foreground->paintOn(
-		hdc, {
-			(int)(position.x - scale.x * anchor.x),
-			(int)(position.y - scale.y * anchor.y)
-		}, {
-			(int)(scale.y * size.y),
-			(int)(scale.y * size.y)
-		}, NOTSRCERASE
-	);
+	stop = true;
+	if(onEnd)
+		onEnd(this);
+	if(loop)
+		begin();
 }
 
-class Sprite {
-public:
-};
+void Animation::paintOn(HDC &hdc, Int2 position, Float2 scale) const {
+	if(active == frames.end()) {
+		frames.begin()->texture.paintOn(hdc, position, scale);
+		return;
+	}
+	active->texture.paintOn(hdc, position, scale);
+}

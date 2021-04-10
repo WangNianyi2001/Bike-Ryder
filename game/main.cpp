@@ -1,4 +1,5 @@
 #include "game.h"
+#include <sstream>
 
 using namespace SimpleWin32;
 
@@ -6,23 +7,45 @@ Window *window;
 EventHandler event_handler;
 PureColor vscreen(RGB(255, 255, 255), { vwidth, vheight });
 
-int y = 10;
-PureColor red(RGB(255, 0, 0), { 8, 8 });
-Text text("something", red);
-
-LRESULT paint(EventHandler *self, DrawingContext dc) {
-	text.paintOn(vscreen.hdc, { 10, y });
+void projectOnto(HDC hdc) {
 	vscreen.paintOn(
-		dc.hdc,
+		hdc,
 		{ 0, 0 },
 		{ vwidth * pixel_scale, vheight * pixel_scale },
 		SRCCOPY
 	);
+}
+
+Animation fall({
+	Frame{ 150, Texture(
+		{ 35, 94 }, { 17, 94 },
+		new Bitmap(L"../images/self/ride/0.bmp")
+	) },
+	Frame{ 75, Texture(
+		{ 37, 95 }, { 18, 95 },
+		new Bitmap(L"../images/self/ride/1.bmp")
+	) },
+	Frame{ 150, Texture(
+		{ 35, 94 }, { 17, 94 },
+		new Bitmap(L"../images/self/ride/2.bmp")
+	) },
+	Frame{ 75, Texture(
+		{ 37, 95 }, { 18, 95 },
+		new Bitmap(L"../images/self/ride/3.bmp")
+	) },
+}, true, true);
+
+PureColor background(RGB(200, 255, 255), { 384, 288 });
+
+LRESULT paint(EventHandler *self, DrawingContext dc) {
+	background.paintOn(vscreen.hdc, { 0, 0 }, { 384, 288 }, SRCCOPY);
+	fall.paintOn(vscreen.hdc, { 100, 100 });
+	projectOnto(dc.hdc);
 	return 0;
 }
 
 LRESULT timer(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
-	++y;
+	fall.update();
 	self->markDirty();
 	return 0;
 }

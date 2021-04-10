@@ -12,18 +12,18 @@ using namespace std;
 static constexpr int fs = 8;
 
 class Text {
-	vector<pair<Frame *, int>> sprites;
+	vector<pair<Texture *, int>> sprites;
 public:
-	static map<char, Texture *> textures;
-	Text(char const *content, Texture &foreground) {
+	static map<char, Layer *> textures;
+	Text(char const *content, Layer &foreground) {
 		char c;
 		for(int i = 0, x = 0; c = content[i]; ++i, x += fs) {
 			if(!isalpha(c))
 				continue;
 			if(isupper(c))
 				c += 'a' - 'A';
-			Texture *fg_copy = new Texture(foreground);
-			Frame *sprite = new Frame(
+			Layer *fg_copy = new Layer(foreground);
+			Texture *sprite = new Texture(
 				{ fs, fs }, { 0, 0 },
 				fg_copy, Text::textures[c]
 			);
@@ -32,7 +32,7 @@ public:
 	}
 	~Text() {
 		for(auto p : sprites) {
-			Frame *s = p.first;
+			Texture *s = p.first;
 			delete s->foreground;
 			delete s;
 		}
@@ -56,7 +56,7 @@ wstring makeFontDir(char c) {
 }
 
 #define tx(c) { c, new Bitmap(makeFontDir(c).c_str()) }
-map<char, Texture *> Text::textures = {
+map<char, Layer *> Text::textures = {
 	tx('a'), tx('b'), tx('c'), tx('d'), tx('e'), tx('f'), tx('g'),
 	tx('h'), tx('i'), tx('j'), tx('k'), tx('l'), tx('m'), tx('n'),
 	tx('o'), tx('p'), tx('q'), tx('r'), tx('s'), tx('t'), tx('u'),
