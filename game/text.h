@@ -1,5 +1,6 @@
 #pragma once
 
+#include "config.h"
 #include "sprite.h"
 #include <cctype>
 #include <vector>
@@ -47,9 +48,8 @@ public:
 	}
 };
 
-static wstring const font_root = L"../font/$.bmp";
 wstring makeFontDir(char c) {
-	wchar_t buf[2] = { c, 0 };
+	wchar_t buf[2] = { (wchar_t)c, 0 };
 	wstring res = font_root;
 	res.replace(res.find(L'$'), 1, buf);
 	return res;
@@ -62,4 +62,4 @@ map<char, Texture *> Text::textures = {
 	tx('o'), tx('p'), tx('q'), tx('r'), tx('s'), tx('t'), tx('u'),
 	tx('v'), tx('w'), tx('x'), tx('y'), tx('z')
 };
-#undef tx(c)
+#undef tx
