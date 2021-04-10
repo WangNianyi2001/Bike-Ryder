@@ -6,16 +6,11 @@ namespace Game {
 	extern int scale;
 
 	class Texture {
-	public:
-		virtual void paintOn(HDC &hdc, int left, int top, int width, int height, int mode = SRCCOPY) = 0;
-	};
-
-	class Bitmap : public Texture {
 		HBITMAP const hbm;
 		BITMAP bm;
 		HDC buffer;
 	public:
-		Bitmap(LPCWSTR url) : hbm((HBITMAP)LoadImage(
+		Texture(LPCWSTR url) : hbm((HBITMAP)LoadImage(
 			NULL, url, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE
 		)) {
 			GetObject(hbm, sizeof(BITMAP), &bm);
@@ -28,17 +23,6 @@ namespace Game {
 				buffer, 0, 0, bm.bmWidth, bm.bmHeight,
 				mode
 			);
-		}
-	};
-
-	class PureColor : public Texture {
-	public:
-		COLORREF color;
-		PureColor(COLORREF color) : color(color) {}
-		void paintOn(HDC &hdc, int left, int top, int width, int height, int mode = SRCCOPY) {
-			SelectObject(hdc, CreatePen(PS_NULL, 0, 0));
-			SelectObject(hdc, CreateSolidBrush(color));
-			Rectangle(hdc, left * scale, top * scale, (left + width) * scale, (top + height) * scale);
 		}
 	};
 

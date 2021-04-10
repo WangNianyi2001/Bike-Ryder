@@ -4,22 +4,7 @@ namespace Game {
 	LRESULT CALLBACK eventProcessor(HWND hWnd, UINT type, WPARAM wParam, LPARAM lParam) {
 		if(type == WM_DESTROY)
 			PostQuitMessage(0);
-		if(!active_scene)
-			return DefWindowProc(hWnd, type, wParam, lParam);
-		if(!active_scene->handlers.count(type))
-			return DefWindowProc(hWnd, type, wParam, lParam);
-		return active_scene->handlers[type](hWnd, wParam, lParam);
-	}
-
-	void addScene(string name, Scene *scene) {
-		scenes.insert(pair(name, scene));
-	}
-
-	void loadScene(string name) {
-		Scene *const scene = scenes[name];
-		if(scene->onEnter)
-			scene->onEnter();
-		active_scene = scene;
+		return DefWindowProc(hWnd, type, wParam, lParam);
 	}
 
 	void initGame(HINSTANCE hInstance) {

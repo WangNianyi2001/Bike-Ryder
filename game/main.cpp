@@ -1,8 +1,5 @@
 #include "game.h"
 
-extern Game::Scene level;
-extern void levelInit();
-
 using namespace Game;
 
 int APIENTRY wWinMain(
@@ -12,11 +9,6 @@ int APIENTRY wWinMain(
 	srand(GetTickCount64());
 
 	initGame(hInstance);
-
-	levelInit();
-	addScene("level", &level);
-
-	loadScene("level");
 
 	return runGame();
 }
