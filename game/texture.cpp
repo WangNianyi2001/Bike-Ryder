@@ -58,7 +58,9 @@ Texture::Texture(
 	foreground(foreground), mask(mask),
 	visible(true) {
 	if(mask) {
-		mask->paintOn(foreground->hdc, { 0, 0 }, { size.x, size.y }, DSTINVERT);
+		invert_mask = new Layer(*mask);
+
+		mask->paintOn(invert_mask->hdc, { 0, 0 }, { size.x, size.y }, DSTINVERT);
 		mask->paintOn(foreground->hdc, { 0, 0 }, { size.x, size.y }, SRCAND);
 	}
 }
@@ -74,6 +76,6 @@ void Texture::paintOn(HDC &hdc, Int2 position, Float2 scale) const {
 		(int)(scale.y * size.y)
 	};
 	if(mask)
-		foreground->paintOn(hdc, _position, _size, DSTINVERT);
-	foreground->paintOn(hdc, _position, _size, mask ? NOTSRCERASE : SRCCOPY);
+		invert_mask->paintOn(hdc, _position, _size, SRCAND);
+	foreground->paintOn(hdc, _position, _size, mask ? SRCPAINT : SRCCOPY);
 }

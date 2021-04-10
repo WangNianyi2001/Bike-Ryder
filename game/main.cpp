@@ -20,8 +20,9 @@ Character player(self_ride, self_kick, self_fall);
 vector<Character *> NPCs;
 void generateNPC() {
 	Character *NPC = new Character(self_ride, self_kick, self_fall);
-	NPC->z = 10;
-	NPC->x = rand() % 300 - 150;
+	NPC->z = 5;
+	NPC->vz = 0.5;
+	NPC->x = rand() % 200 - 100;
 	NPCs.push_back(NPC);
 }
 
@@ -29,18 +30,41 @@ PureColor background(RGB(255, 255, 255));
 
 LRESULT paint(EventHandler *self, DrawingContext dc) {
 	background.paintOn(vscreen.hdc, { 0, 0 });
-	player.render(vscreen.hdc);
 	for(auto NPC : NPCs)
 		NPC->render(vscreen.hdc);
+	player.render(vscreen.hdc);
 	projectOnto(dc.hdc);
 	return 0;
 }
 
+bool accelerate = false, decelerate = false, move_left = false, move_right = false;
+
 LRESULT timer(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
-	player.updateAnimation();
+	if(accelerate) {
+		player.vz += 0.01;
+		if(player.vz > 1)
+			player.vz = 1;
+	}
+	if(decelerate) {
+		player.vz -= 0.01;
+		if(player.vz < 0)
+			player.vz = 0;
+	}
+	if(move_left) {
+		player.x -= 5;
+		if(player.x < -300)
+			player.x = -300;
+	}
+	if(move_right) {
+		player.x += 5;
+		if(player.z > 300)
+			player.z = 300;
+	}
 	player.updatePhysics();
+	player.updateAnimation();
 	for(auto NPC : NPCs) {
 		NPC->z -= player.z - 1;
+		NPC->updatePhysics();
 		NPC->updateAnimation();
 	}
 	while(true) {
@@ -52,24 +76,44 @@ LRESULT timer(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
 			break;
 		NPCs.erase(it);
 	}
-	if(rand() % 100 <= 10)
+	if(rand() % 100 <= 10 * player.vz)
 		generateNPC();
 	player.z = 1;
 	self->markDirty();
 	return 0;
 }
 
+LRESULT keyup(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
+	switch(wParam) {
+	case 'W':
+		accelerate = false;
+		break;
+	case 'S':
+		decelerate = false;
+		break;
+	case 'A':
+		move_left = false;
+		break;
+	case 'D':
+		move_right = false;
+		break;
+	}
+	return 0;
+}
+
 LRESULT keydown(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
 	switch(wParam) {
 	case 'W':
-		player.vz += 0.05;
-		if(player.vz > 1)
-			player.vz = 1;
+		accelerate = true;
 		break;
 	case 'S':
-		player.vz -= 0.05;
-		if(player.vz < 0)
-			player.vz = 0;
+		decelerate = true;
+		break;
+	case 'A':
+		move_left = true;
+		break;
+	case 'D':
+		move_right = true;
 		break;
 	case 'Q':
 		player.kick(1);
@@ -108,6 +152,7 @@ int APIENTRY wWinMain(
 	event_handler.addHandler(WM_PAINT, paint);
 	event_handler.addHandler(WM_TIMER, timer);
 	event_handler.addHandler(WM_KEYDOWN, keydown);
+	event_handler.addHandler(WM_KEYUP, keyup);
 	event_handler.addHandler(WM_DESTROY, EventHandler::defaultDestroyHandler);
 
 	// Animations

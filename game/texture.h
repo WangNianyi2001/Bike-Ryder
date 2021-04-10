@@ -27,7 +27,7 @@ public:
 
 struct Texture : public Scalable {
 	Int2 size, anchor;
-	Layer *foreground, *mask;
+	Layer *foreground, *mask, *invert_mask;
 	bool visible;
 	Texture(
 		Int2 size, Int2 anchor,
