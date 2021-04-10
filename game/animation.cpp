@@ -38,7 +38,7 @@ void Animation::update() {
 
 void Animation::paintOn(HDC &hdc, Int2 position, Float2 scale) const {
 	if(active == frames.end()) {
-		frames.begin()->texture.paintOn(hdc, position, scale);
+		(frames.end() - 1)->texture.paintOn(hdc, position, scale);
 		return;
 	}
 	active->texture.paintOn(hdc, position, scale);

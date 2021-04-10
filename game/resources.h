@@ -13,7 +13,7 @@ Bitmap *loadImage(wchar_t const *url) {
 	return res;
 }
 
-Animation self_fall({
+Animation self_ride({
 	Frame{ 150, Texture(
 		{ 35, 94 }, { 19, 94 },
 		loadImage(L"self/ride/0"),
@@ -33,15 +33,30 @@ Animation self_fall({
 		{ 37, 95 }, { 19, 95 },
 		loadImage(L"self/ride/3"),
 		loadImage(L"self/ride/3.mask")
-	) },
+	) }
 }, true);
 
 Animation self_kick({
 	Frame{ 150, Texture(
 		{ 73, 95 }, { 42, 95 },
 		loadImage(L"self/kick/0")
+	) }
+}, false);
+
+Animation self_fall({
+	Frame{ 50, Texture(
+		{ 50, 94 }, { 9, 94 },
+		loadImage(L"self/fall/0")
 	) },
-	}, true);
+	Frame{ 50, Texture(
+		{ 83, 67 }, { 6, 67 },
+		loadImage(L"self/fall/1")
+	) },
+	Frame{ 50, Texture(
+		{ 124, 39 }, { 0, 39 },
+		loadImage(L"self/fall/2")
+	) }
+}, false);
 
 void unloadImages() {
 	for(Bitmap *image : images)

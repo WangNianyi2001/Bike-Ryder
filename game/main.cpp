@@ -16,30 +16,70 @@ void projectOnto(HDC hdc) {
 	);
 }
 
-Character player(self_fall, self_kick, self_fall);
+Character player(self_ride, self_kick, self_fall);
+vector<Character *> NPCs;
+void generateNPC() {
+	Character *NPC = new Character(self_ride, self_kick, self_fall);
+	NPC->z = 10;
+	NPC->x = rand() % 300 - 150;
+	NPCs.push_back(NPC);
+}
 
 PureColor background(RGB(255, 255, 255));
 
 LRESULT paint(EventHandler *self, DrawingContext dc) {
 	background.paintOn(vscreen.hdc, { 0, 0 });
 	player.render(vscreen.hdc);
+	for(auto NPC : NPCs)
+		NPC->render(vscreen.hdc);
 	projectOnto(dc.hdc);
 	return 0;
 }
 
 LRESULT timer(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
-	((Animation *)player.current->second)->update();
+	player.updateAnimation();
+	player.updatePhysics();
+	for(auto NPC : NPCs) {
+		NPC->z -= player.z - 1;
+		NPC->updateAnimation();
+	}
+	while(true) {
+		auto it = find_if(
+			NPCs.begin(), NPCs.end(),
+			[&](Character *NPC) { return NPC->z <= 0 || NPC->z >= 100; }
+		);
+		if(it == NPCs.end())
+			break;
+		NPCs.erase(it);
+	}
+	if(rand() % 100 <= 10)
+		generateNPC();
+	player.z = 1;
 	self->markDirty();
 	return 0;
 }
 
 LRESULT keydown(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
 	switch(wParam) {
-	case 'A':
+	case 'W':
+		player.vz += 0.05;
+		if(player.vz > 1)
+			player.vz = 1;
+		break;
+	case 'S':
+		player.vz -= 0.05;
+		if(player.vz < 0)
+			player.vz = 0;
+		break;
+	case 'Q':
 		player.kick(1);
 		break;
-	case 'D':
+	case 'E':
 		player.kick(-1);
+		break;
+	case VK_SPACE:
+		player.ride();
+		break;
 	}
 	return 0;
 }

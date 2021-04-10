@@ -1,6 +1,18 @@
 #include "character.h"
 #include "config.h"
 
+void Character::updatePhysics() {
+	z += vz;
+	if(vz == 0)
+		_ride->stop = true;
+	else
+		_ride->stop = false;
+}
+
+void Character::updateAnimation() {
+	((Animation *)current->second)->update();
+}
+
 void Character::ride() {
 	switchAppearance("ride");
 	_ride->begin();
@@ -10,6 +22,12 @@ void Character::kick(int direction) {
 	this->direction = direction;
 	switchAppearance("kick");
 	_kick->begin();
+}
+
+void Character::fall() {
+	vz = 0;
+	switchAppearance("fall");
+	_fall->begin();
 }
 
 void Character::render(HDC hdc) {
@@ -31,4 +49,10 @@ Character::Character(Animation const &ride, Animation const &kick, Animation con
 		this->ride();
 	};
 	this->ride();
+}
+
+Character::~Character() {
+	delete _ride;
+	delete _kick;
+	delete _fall;
 }
