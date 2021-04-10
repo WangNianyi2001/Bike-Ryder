@@ -24,7 +24,7 @@ namespace Game {
 		}
 		void paintOn(HDC &hdc, int left, int top, int width, int height, int mode = SRCCOPY) {
 			StretchBlt(
-				hdc, left, top, (int)(width * scale), (int)(height * scale),
+				hdc, left * scale, top * scale, width * scale, height * scale,
 				buffer, 0, 0, bm.bmWidth, bm.bmHeight,
 				mode
 			);
@@ -38,7 +38,7 @@ namespace Game {
 		void paintOn(HDC &hdc, int left, int top, int width, int height, int mode = SRCCOPY) {
 			SelectObject(hdc, CreatePen(PS_NULL, 0, 0));
 			SelectObject(hdc, CreateSolidBrush(color));
-			Rectangle(hdc, left, top, left + width, top + height);
+			Rectangle(hdc, left * scale, top * scale, (left + width) * scale, (top + height) * scale);
 		}
 	};
 
