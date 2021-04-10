@@ -1,11 +1,9 @@
 #include "animation.h"
 
-Animation::Animation(initializer_list<Frame> frames, bool loop, bool begin, void (*onEnd)(Animation *)) :
+Animation::Animation(initializer_list<Frame> frames, bool loop, void (*onEnd)(Animation *)) :
 	loop(loop), onEnd(onEnd)
 {
 	this->frames.insert(this->frames.end(), frames);
-	if(begin)
-		this->begin();
 }
 
 void Animation::begin() {

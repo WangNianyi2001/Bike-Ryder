@@ -1,5 +1,5 @@
 #include "game.h"
-#include <sstream>
+#include "resources.h"
 
 using namespace SimpleWin32;
 
@@ -16,29 +16,10 @@ void projectOnto(HDC hdc) {
 	);
 }
 
-Animation fall({
-	Frame{ 150, Texture(
-		{ 35, 94 }, { 17, 94 },
-		new Bitmap(L"../images/self/ride/0.bmp")
-	) },
-	Frame{ 75, Texture(
-		{ 37, 95 }, { 18, 95 },
-		new Bitmap(L"../images/self/ride/1.bmp")
-	) },
-	Frame{ 150, Texture(
-		{ 35, 94 }, { 17, 94 },
-		new Bitmap(L"../images/self/ride/2.bmp")
-	) },
-	Frame{ 75, Texture(
-		{ 37, 95 }, { 18, 95 },
-		new Bitmap(L"../images/self/ride/3.bmp")
-	) },
-}, true, true);
-
-PureColor background(RGB(200, 255, 255), { 384, 288 });
+PureColor background(RGB(255, 255, 200));
 
 LRESULT paint(EventHandler *self, DrawingContext dc) {
-	background.paintOn(vscreen.hdc, { 0, 0 }, { 384, 288 }, SRCCOPY);
+	background.paintOn(vscreen.hdc, { 0, 0 });
 	fall.paintOn(vscreen.hdc, { 100, 100 });
 	projectOnto(dc.hdc);
 	return 0;
@@ -72,6 +53,7 @@ int APIENTRY wWinMain(
 	event_handler.addHandler(WM_PAINT, paint);
 	event_handler.addHandler(WM_TIMER, timer);
 	event_handler.addHandler(WM_DESTROY, EventHandler::defaultDestroyHandler);
+	fall.begin();
 
 	return window->run();
 }

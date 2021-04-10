@@ -2,6 +2,7 @@
 #pragma warning(disable:26495)
 
 #include <windows.h>
+#include "config.h"
 
 template<typename T> struct Pair { T x, y; };
 
@@ -14,12 +15,13 @@ struct Layer {
 	HBITMAP hbm;
 	Layer(Int2 size);
 	Layer(Layer const &reference);
-	void paintOn(HDC &hdc, Int2 position, Int2 dest_size, int mode);
+	void paintOn(HDC &hdc, Int2 position, int mode = SRCCOPY);
+	void paintOn(HDC &hdc, Int2 position, Int2 dest_size, int mode = SRCCOPY);
 };
 
 struct PureColor : Layer {
 	COLORREF color;
-	PureColor(COLORREF color, Int2 size);
+	PureColor(COLORREF color, Int2 size = { vwidth, vheight });
 };
 
 struct Bitmap : Layer {

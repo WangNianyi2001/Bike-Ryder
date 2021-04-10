@@ -12,13 +12,17 @@ Layer::Layer(Layer const &reference) : Layer(reference.size) {
 	BitBlt(hdc, 0, 0, size.x, size.y, reference.hdc, 0, 0, SRCCOPY);
 }
 
+void Layer::paintOn(HDC &dest, Int2 position, int mode) {
+	BitBlt(
+		dest, position.x, position.y, size.x, size.y,
+		hdc, 0, 0,
+		mode
+	);
+}
+
 void Layer::paintOn(HDC &dest, Int2 position, Int2 dest_size, int mode) {
 	StretchBlt(
-		dest,
-		position.x,
-		position.y,
-		dest_size.x,
-		dest_size.y,
+		dest, position.x, position.y, dest_size.x, dest_size.y,
 		hdc, 0, 0, size.x, size.y,
 		mode
 	);

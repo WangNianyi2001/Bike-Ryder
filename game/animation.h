@@ -19,7 +19,7 @@ struct Animation {
 	vector<Frame>::iterator active;
 	bool loop = false, stop = true;
 	void (*onEnd)(Animation *);
-	Animation(initializer_list<Frame> frames, bool loop = false, bool start = false, void (*onEnd)(Animation *) = nullptr);
+	Animation(initializer_list<Frame> frames, bool loop = false, void (*onEnd)(Animation *) = nullptr);
 	void begin();
 	void update();
 	void paintOn(HDC &hdc, Int2 position, Float2 scale = { 1.0f, 1.0f }) const;
