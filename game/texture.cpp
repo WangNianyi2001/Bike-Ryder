@@ -59,7 +59,6 @@ Texture::Texture(
 	visible(true) {
 	if(mask) {
 		invert_mask = new Layer(*mask);
-
 		mask->paintOn(invert_mask->hdc, { 0, 0 }, { size.x, size.y }, DSTINVERT);
 		mask->paintOn(foreground->hdc, { 0, 0 }, { size.x, size.y }, SRCAND);
 	}

@@ -13,6 +13,8 @@ Bitmap *loadImage(wchar_t const *url) {
 	return res;
 }
 
+Bitmap *background = loadImage(L"background");
+
 Animation self_ride({
 	Frame{ 150, Texture(
 		{ 35, 94 }, { 19, 94 },
@@ -39,22 +41,26 @@ Animation self_ride({
 Animation self_kick({
 	Frame{ 150, Texture(
 		{ 73, 95 }, { 42, 95 },
-		loadImage(L"self/kick/0")
+		loadImage(L"self/kick/0"),
+		loadImage(L"self/kick/0.mask")
 	) }
 }, false);
 
 Animation self_fall({
 	Frame{ 50, Texture(
 		{ 50, 94 }, { 9, 94 },
-		loadImage(L"self/fall/0")
+		loadImage(L"self/fall/0"),
+		loadImage(L"self/fall/0.mask")
 	) },
 	Frame{ 50, Texture(
 		{ 83, 67 }, { 6, 67 },
-		loadImage(L"self/fall/1")
+		loadImage(L"self/fall/1"),
+		loadImage(L"self/fall/1.mask")
 	) },
 	Frame{ 50, Texture(
 		{ 124, 39 }, { 0, 39 },
-		loadImage(L"self/fall/2")
+		loadImage(L"self/fall/2"),
+		loadImage(L"self/fall/2.mask")
 	) }
 }, false);
 
