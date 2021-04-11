@@ -13,7 +13,28 @@ Bitmap *loadImage(wchar_t const *url) {
 	return res;
 }
 
-Bitmap *background = loadImage(L"background");
+Animation background({
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"background/0")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"background/1")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"background/2")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"background/3")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"background/4")
+	) },
+}, true);
 
 Animation self_ride({
 	Frame{ 150, Texture(

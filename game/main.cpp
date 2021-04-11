@@ -17,7 +17,7 @@ void projectOnto(HDC hdc) {
 }
 
 LRESULT paint(EventHandler *self, DrawingContext dc) {
-	background->paintOn(vscreen.hdc, { 0, 0 });
+	background.paintOn(vscreen.hdc, { 0, 0 });
 	for(auto p : Physics::all)
 		p->render(vscreen.hdc);
 	projectOnto(dc.hdc);
@@ -25,7 +25,7 @@ LRESULT paint(EventHandler *self, DrawingContext dc) {
 }
 
 LRESULT timer(EventHandler *self, HWND hWnd, WPARAM wParam, LPARAM lParam) {
-	updatePhysics();
+	update();
 	if(rand() % 100 <= 10 * player.vz)
 		generateNPC();
 	self->markDirty();

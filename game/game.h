@@ -53,23 +53,24 @@ void updateMoveState(WPARAM key, bool state) {
 void move() {
 	if(!player.active)
 		return;
+	player.vz *= speed_decay;
 	if(accelerate) {
-		player.vz += 0.01;
+		player.vz += 0.01f;
 		if(player.vz > 1)
 			player.vz = 1;
 	}
 	if(decelerate) {
-		player.vz -= 0.01;
+		player.vz -= 0.01f;
 		if(player.vz < 0)
 			player.vz = 0;
 	}
 	if(move_left) {
-		player.x -= 10;
+		player.x -= 10.0f;
 		if(player.x < -300)
 			player.x = -300;
 	}
 	if(move_right) {
-		player.x += 10;
+		player.x += 10.0f;
 		if(player.x > 300)
 			player.x = 300;
 	}
@@ -110,20 +111,25 @@ void clipNPCs() {
 	}
 }
 
-void updatePhysics() {
+void update() {
+	// Physics
 	move();
 	Physics::updateAll();
 	for(auto physics : Physics::all)
 		physics->z -= player.vz;
-	player.updateAnimation();
-	for(auto NPC : NPCs)
-		NPC->updateAnimation();
 	player.z = player_z;
+	// Logic
 	clipNPCs();
 	if(crashed())
 		player.fall();
+	// Graphics
+	player.updateAnimation();
+	for(auto NPC : NPCs)
+		NPC->updateAnimation();
+	background.update();
 }
 
 void initGame() {
+	background.begin();
 	player.z = player_z;
 }
