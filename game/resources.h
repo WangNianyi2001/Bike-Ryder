@@ -85,6 +85,50 @@ Animation self_fall({
 	) }
 }, false);
 
+Animation npc_ride({
+	Frame{ 150, Texture(
+		{ 35, 94 }, { 19, 94 },
+		loadImage(L"npc/ride/0"),
+		loadImage(L"npc/ride/0.mask")
+	) },
+	Frame{ 150, Texture(
+		{ 35, 94 }, { 16, 94 },
+		loadImage(L"npc/ride/1"),
+		loadImage(L"npc/ride/1.mask")
+	) }
+}, true);
+
+Animation npc_kick({
+	Frame{ 150, Texture(
+		{ 43, 99 }, { 25, 99 },
+		loadImage(L"npc/kick/0"),
+		loadImage(L"npc/kick/0.mask")
+	) },
+	Frame{ 150, Texture(
+		{ 73, 95 }, { 42, 95 },
+		loadImage(L"npc/kick/1"),
+		loadImage(L"npc/kick/1.mask")
+	) }
+},false);
+
+Animation npc_fall({
+	Frame{ 50, Texture(
+		{ 50, 94 }, { 9, 94 },
+		loadImage(L"npc/fall/0"),
+		loadImage(L"npc/fall/0.mask")
+	) },
+	Frame{ 50, Texture(
+		{ 83, 67 }, { 6, 67 },
+		loadImage(L"npc/fall/1"),
+		loadImage(L"npc/fall/1.mask")
+	) },
+	Frame{ 50, Texture(
+		{ 124, 39 }, { 0, 39 },
+		loadImage(L"npc/fall/2"),
+		loadImage(L"npc/fall/2.mask")
+	) }
+}, false);
+
 void unloadImages() {
 	for(Bitmap *image : images)
 		delete image;

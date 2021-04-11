@@ -10,7 +10,7 @@
 Character player(self_ride, self_kick, self_fall);
 vector<Character *> NPCs;
 void generateNPC() {
-	Character *NPC = new Character(self_ride, self_kick, self_fall);
+	Character *NPC = new Character(npc_ride, npc_kick, npc_fall);
 	NPC->z = 5;
 	NPC->vz = 0.2;
 	NPC->x = rand() % 200 - 100;
