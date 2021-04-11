@@ -37,7 +37,7 @@ public:
 			delete s;
 		}
 	}
-	void paintOn(HDC hdc, Int2 position) {
+	void paintOn(HDC &hdc, Int2 position) const {
 		for(auto p : sprites) {
 			auto sprite = p.first;
 			auto x = p.second;
