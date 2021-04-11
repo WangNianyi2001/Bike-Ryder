@@ -3,6 +3,7 @@
 #include "config.h"
 #include "animation.h"
 #include <set>
+#include <vector>
 
 std::set<Bitmap *> images;
 Bitmap *loadImage(wchar_t const *url) {
@@ -33,6 +34,24 @@ Animation background({
 	Frame{ 150, Texture(
 		{ vwidth, vheight }, { 0, 0 },
 		loadImage(L"background/4")
+	) },
+}, true);
+
+Animation runway({
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"runway/0"),
+		loadImage(L"runway/mask")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"runway/1"),
+		loadImage(L"runway/mask")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"runway/2"),
+		loadImage(L"runway/mask")
 	) },
 }, true);
 
@@ -128,6 +147,29 @@ Animation npc_fall({
 		loadImage(L"npc/fall/2.mask")
 	) }
 }, false);
+
+vector<Texture> buildings{
+	Texture(
+		{ 234, 249 }, { 214, 220 },
+		loadImage(L"building/0"),
+		loadImage(L"building/0.mask")
+	),
+	Texture(
+		{ 219, 249 }, { 214, 220 },
+		loadImage(L"building/1"),
+		loadImage(L"building/1.mask")
+	),
+	Texture(
+		{ 184, 130 }, { 183, 106 },
+		loadImage(L"building/2"),
+		loadImage(L"building/2.mask")
+	),
+	Texture(
+		{ 166, 247}, { 164, 235 },
+		loadImage(L"building/3"),
+		loadImage(L"building/3.mask")
+	)
+};
 
 void unloadImages() {
 	for(Bitmap *image : images)

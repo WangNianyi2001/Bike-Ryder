@@ -11,10 +11,24 @@ Character player(self_ride, self_kick, self_fall);
 vector<Character *> NPCs;
 void generateNPC() {
 	Character *NPC = new Character(npc_ride, npc_kick, npc_fall);
-	NPC->z = 5;
-	NPC->vz = 0.2;
-	NPC->x = rand() % 200 - 100;
+	NPC->z = generate_z;
+	NPC->vz = avg_npc_speed + ((float)rand() / RAND_MAX - .5) * npc_speed_tolerance;
+	NPC->x = rand() % runway_width - runway_width / 2;
 	NPCs.push_back(NPC);
+	Physics::sort();
+}
+
+void generateBuilding() {
+	int const index = rand() % buildings.size();
+	Physics *building = new Physics(&buildings[index]);
+	building->z = generate_z;
+	building->vz = 0;
+	building->x = -runway_width / 2;
+	if(rand() & 1) {
+		building->x *= -1;
+		building->direction = -1;
+	}
+	Physics::sort();
 }
 
 bool inKickRange(Character *NPC, int direction) {
@@ -66,13 +80,13 @@ void move() {
 	}
 	if(move_left) {
 		player.x -= 10.0f;
-		if(player.x < -300)
-			player.x = -300;
+		if(player.x < -runway_width / 2)
+			player.x = -runway_width / 2;
 	}
 	if(move_right) {
 		player.x += 10.0f;
-		if(player.x > 300)
-			player.x = 300;
+		if(player.x > runway_width / 2)
+			player.x = runway_width / 2;
 	}
 }
 
@@ -89,7 +103,7 @@ void kick(WPARAM key) {
 	player.kick(direction);
 	for(auto NPC : NPCs) {
 		if(inKickRange(NPC, direction))
-			NPC->fall();
+			NPC->fall(direction);
 	}
 }
 
@@ -111,6 +125,13 @@ void clipNPCs() {
 	}
 }
 
+void clipPhysics() {
+	for(auto p : Physics::all) {
+		if(toBeClipped(p))
+			delete p;
+	}
+}
+
 void update() {
 	// Physics
 	move();
@@ -120,16 +141,20 @@ void update() {
 	player.z = player_z;
 	// Logic
 	clipNPCs();
+	clipPhysics();
 	if(crashed())
-		player.fall();
+		player.fall(player.direction);
 	// Graphics
 	player.updateAnimation();
 	for(auto NPC : NPCs)
 		NPC->updateAnimation();
 	background.update();
+	if(player.vz)
+		runway.update();
 }
 
 void initGame() {
 	background.begin();
+	runway.begin();
 	player.z = player_z;
 }

@@ -4,13 +4,25 @@
 
 std::vector<Physics *> Physics::all{};
 
+bool compare(Physics *a, Physics *b) {
+	return a->z > b->z;
+}
+
+void Physics::sort() {
+	std::sort(Physics::all.begin(), Physics::all.end(), compare);
+}
+
 void Physics::updateAll() {
 	for(Physics *p : Physics::all)
 		p->updatePhysics();
-	sort(Physics::all.begin(), Physics::all.end());
+	sort();
 }
 
 Physics::Physics() {
+	Physics::all.push_back(this);
+}
+
+Physics::Physics(Scalable *appearance) : Sprite(appearance) {
 	Physics::all.push_back(this);
 }
 
@@ -18,10 +30,6 @@ Physics::~Physics() {
 	Physics::all.erase(
 		find(Physics::all.begin(), Physics::all.end(), this)
 	);
-}
-
-bool Physics::operator>(Physics const &p) {
-	return z > p.z;
 }
 
 void Physics::updatePhysics() {
@@ -59,8 +67,9 @@ void Character::kick(int direction) {
 	_kick->begin();
 }
 
-void Character::fall() {
+void Character::fall(int direction) {
 	vz = 0;
+	this->direction = direction;
 	switchAppearance("fall");
 	_fall->begin();
 	active = false;
