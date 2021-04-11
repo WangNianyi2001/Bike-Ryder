@@ -14,6 +14,11 @@ Bitmap *loadImage(wchar_t const *url) {
 	return res;
 }
 
+Texture banner(
+	{ vwidth, vheight }, { 0, 0 },
+	loadImage(L"banner")
+);
+
 Animation background({
 	Frame{ 150, Texture(
 		{ vwidth, vheight }, { 0, 0 },
@@ -41,6 +46,16 @@ Animation runway({
 	Frame{ 150, Texture(
 		{ vwidth, vheight }, { 0, 0 },
 		loadImage(L"runway/0"),
+		loadImage(L"runway/mask")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"runway/1"),
+		loadImage(L"runway/mask")
+	) },
+	Frame{ 150, Texture(
+		{ vwidth, vheight }, { 0, 0 },
+		loadImage(L"runway/2"),
 		loadImage(L"runway/mask")
 	) }
 }, true);

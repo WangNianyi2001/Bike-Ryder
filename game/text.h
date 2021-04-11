@@ -18,7 +18,7 @@ public:
 	Text(char const *content, Layer &foreground) {
 		char c;
 		for(int i = 0, x = 0; c = content[i]; ++i, x += fs) {
-			if(!isalpha(c))
+			if(!isalnum(c))
 				continue;
 			if(isupper(c))
 				c += 'a' - 'A';
@@ -60,6 +60,8 @@ map<char, Layer *> Text::textures = {
 	tx('a'), tx('b'), tx('c'), tx('d'), tx('e'), tx('f'), tx('g'),
 	tx('h'), tx('i'), tx('j'), tx('k'), tx('l'), tx('m'), tx('n'),
 	tx('o'), tx('p'), tx('q'), tx('r'), tx('s'), tx('t'), tx('u'),
-	tx('v'), tx('w'), tx('x'), tx('y'), tx('z')
+	tx('v'), tx('w'), tx('x'), tx('y'), tx('z'), tx('0'), tx('1'),
+	tx('2'), tx('3'), tx('4'), tx('5'), tx('6'), tx('7'), tx('8'),
+	tx('9')
 };
 #undef tx

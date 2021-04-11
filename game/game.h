@@ -3,9 +3,15 @@
 
 #include "config.h"
 #include "resources.h"
-#include "text.h"
+// #include "text.h"
 #include "physics.h"
 #include <algorithm>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
+void playSound(LPCWSTR url) {
+	PlaySound(url, NULL, SND_ASYNC | SND_FILENAME);
+}
 
 Character player(self_ride, self_kick, self_fall);
 vector<Character *> NPCs;
@@ -157,4 +163,5 @@ void initGame() {
 	background.begin();
 	runway.begin();
 	player.z = player_z;
+	playSound(bgm);
 }
